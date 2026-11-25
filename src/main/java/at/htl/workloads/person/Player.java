@@ -1,9 +1,13 @@
 package at.htl.workloads.person;
 
 import jakarta.persistence.Column;
+import at.htl.workloads.team.TeamMembership;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Player extends Person {
@@ -17,7 +21,8 @@ public class Player extends Person {
     @Column(nullable = false)
     private LocalDate birthDate;
 
-    // TODO (you): add the Player side of the TeamMembership relationship here.
+    @OneToMany(mappedBy = "player")
+    private List<TeamMembership> memberships = new ArrayList<>();
 
     public Player() {
     }
@@ -28,6 +33,10 @@ public class Player extends Person {
         this.nickname = nickname;
         this.country = country;
         this.birthDate = birthDate;
+    }
+
+    public List<TeamMembership> getMemberships() {
+        return memberships;
     }
 
     public String getNickname() {

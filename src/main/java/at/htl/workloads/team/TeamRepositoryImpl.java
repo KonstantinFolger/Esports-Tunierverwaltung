@@ -17,7 +17,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     @Override
     public Optional<Team> findByTag(String tag) {
         var query = entityManager.createQuery(
-                "" /* TODO (you): JPQL query for the Team with this tag */,
+                "select t from Team t where t.tag = :tag",
                 Team.class);
         query.setParameter("tag", tag);
         return query.getResultStream().findFirst();
@@ -26,7 +26,7 @@ public class TeamRepositoryImpl implements TeamRepository {
     @Override
     public Optional<Team> findByName(String name) {
         var query = entityManager.createQuery(
-                "" /* TODO (you): JPQL query for the Team with this name */,
+                "select t from Team t where t.name = :name",
                 Team.class);
         query.setParameter("name", name);
         return query.getResultStream().findFirst();

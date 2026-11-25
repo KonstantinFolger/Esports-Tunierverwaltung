@@ -17,7 +17,7 @@ public class PersonRepositoryImpl implements PersonRepository {
     @Override
     public Optional<Person> findByEmail(String email) {
         var query = entityManager.createQuery(
-                "" /* TODO (you): JPQL query for any Person with this email (including subtypes) */,
+                "select p from Person p where p.email = :email",
                 Person.class);
         query.setParameter("email", email);
         return query.getResultStream().findFirst();

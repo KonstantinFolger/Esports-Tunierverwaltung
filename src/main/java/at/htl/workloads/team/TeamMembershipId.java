@@ -1,9 +1,11 @@
 package at.htl.workloads.team;
 
+import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-// TODO (you): mark this key class as @Embeddable.
+@Embeddable
 public class TeamMembershipId implements Serializable {
 
     private Long teamId;

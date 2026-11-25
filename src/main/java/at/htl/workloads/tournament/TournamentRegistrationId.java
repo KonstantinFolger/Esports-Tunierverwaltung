@@ -1,9 +1,11 @@
 package at.htl.workloads.tournament;
 
+import jakarta.persistence.Embeddable;
+
 import java.io.Serializable;
 import java.util.Objects;
 
-// TODO (you): mark this key class as @Embeddable.
+@Embeddable
 public class TournamentRegistrationId implements Serializable {
 
     private Long tournamentId;

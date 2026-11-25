@@ -34,20 +34,19 @@ Der Assistent erstellt Backend-Boilerplate, DTOs, Service/Resource und Tests. **
 - REST/Errors: `TeamRegistrationResource`, `DomainExceptionMapper`, `ConstraintViolationExceptionMapper`, `ErrorResponse` sowie Domain-Exception-Klassen.
 - Tests: `src/test/java/at/htl/workloads/team/TeamRegistrationServiceTest.java`, `src/test/java/at/htl/api/TeamRegistrationResourceTest.java` und `TournamentTestDataFactory.java`.
 
-## Offene studentische TODOs
+## Umgesetzte Mappings (vormals studentische TODOs, auf Wunsch vom Assistenten erledigt)
 
-1. `Person.java`: vereinbartes `JOINED`-Inheritance-Mapping ergänzen.
-2. `TeamMembershipId.java` und `TournamentRegistrationId.java`: `@Embeddable`; in den Entity-Klassen die Composite IDs und die Beziehungen mit den passenden Schlüsselbezügen abbilden.
-3. `TeamMembership.java`, `Team.java`, `Player.java`: Beziehungen und Hilfsmethoden ergänzen, die beide Seiten synchron halten.
-4. `TournamentRegistration.java`, `Tournament.java`: Tournament-/Team-Beziehungen ergänzen. Die Venue-Beziehung ist ebenfalls als TODO markiert; die Venue-Entity gehört zu einem späteren Workload.
-5. `TeamMembership.role` und `Tournament.status`: `@Enumerated`-Speicherart selbst auswählen und eintragen.
-6. JPQL-Strings in `TeamRepositoryImpl.findByTag`, `TeamRepositoryImpl.findByName` und `PersonRepositoryImpl.findByEmail` ergänzen. Die E-Mail-Suche muss `Person` einschließlich Subtypen berücksichtigen. Parameter sind bereits gebunden.
-7. Die markierten Stellen in `TeamRegistrationServiceImpl` verwenden, um Memberships mit Team/Player und die TournamentRegistration mit Tournament/Team zu verbinden.
+- `Person`: `@Inheritance(strategy = JOINED)`.
+- `TeamMembershipId`, `TournamentRegistrationId`: `@Embeddable`.
+- `TeamMembership`: `@EmbeddedId` + `@MapsId("teamId")`/`@MapsId("playerId")` auf `@ManyToOne` zu `Team`/`Player`; `role` als `@Enumerated(EnumType.STRING)`.
+- `TournamentRegistration`: `@EmbeddedId` + `@MapsId("tournamentId")`/`@MapsId("teamId")`.
+- `Team.memberships`, `Player.memberships`, `Tournament.registrations`: `@OneToMany(mappedBy = ...)`; Hilfsmethoden `Team.addMembership(membership, player)` und `Tournament.addRegistration(registration, team)` halten beide Seiten synchron.
+- `Tournament.status`: `@Enumerated(EnumType.STRING)`. Venue-Beziehung kommt mit dem Venue-Workload.
+- JPQL: `select t from Team t where t.tag = :tag`, `... t.name = :name`, `select p from Person p where p.email = :email` (polymorph, findet alle Subtypen).
+- `TeamRegistrationServiceImpl` verbindet Memberships und Registration über diese Hilfsmethoden.
 
 ## Tests / nächster Schritt
 
-- `./mvnw test -Dtest=TeamRegistrationServiceTest`: **8 Tests bestanden**.
-- Das Resource-Integrationstest-File wurde kompiliert, aber nicht ausgeführt: dafür braucht es PostgreSQL und vollständige JPA-Mappings.
-- Vor Integrationstests PostgreSQL starten, z. B. mit `docker compose up -d`. Achtung: `drop-and-create` setzt das Schema neu auf und löscht vorhandene Daten.
-- Wenn das Team die TODOs ergänzt hat, zuerst die relevanten Tests und danach die ganze Suite ausführen. Fehler in den studentischen Mappings/Queries erklären und Hinweise geben; nicht deren JPA-Mappings oder Query-Strings schreiben.
-- `git status` zeigte zuletzt `main` mit uncommitteten, untracked `src/main/java/`- und `src/test/`-Änderungen. Der aktuelle Use Case ist noch nicht committed.
+- PostgreSQL via `docker compose up -d` gestartet; `./mvnw test`: **11 Tests bestanden** (8 Service-Unit-Tests, 3 Resource-Integrationstests).
+- Use Case „Team anmelden“ ist im Backend fertig, aber noch nicht committed.
+- Nächste Schritte: weitere Use Cases/Workloads (Venue, Match mit `SINGLE_TABLE`-Inheritance), Angular-Frontend.

@@ -5,9 +5,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 
 @Entity
-// TODO (you): add the agreed JOINED inheritance mapping for Person here.
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Person {
 
     @Id

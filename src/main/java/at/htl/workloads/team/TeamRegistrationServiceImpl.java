@@ -86,14 +86,13 @@ public class TeamRegistrationServiceImpl implements TeamRegistrationService {
 
             var membershipId = new TeamMembershipId(team.getId(), player.getId());
             var membership = new TeamMembership(membershipId, joinedAt, null, playerRequest.role());
-            // TODO (you): connect TeamMembership to Team and Player using your mapped owning relationships;
-            // keep both sides in sync before persisting the membership.
+            team.addMembership(membership, player);
             teamMembershipRepository.add(membership);
         }
 
         var registrationId = new TournamentRegistrationId(tournament.getId(), team.getId());
         var registration = new TournamentRegistration(registrationId, LocalDateTime.now(), null);
-        // TODO (you): connect TournamentRegistration to Tournament and Team using your mapped relationships.
+        tournament.addRegistration(registration, team);
         tournamentRegistrationRepository.add(registration);
 
         return teamMapper.toDto(team);

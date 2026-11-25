@@ -5,8 +5,13 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+
+import at.htl.workloads.person.Player;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 public class Team {
@@ -24,7 +29,8 @@ public class Team {
     @Column(nullable = false)
     private LocalDate foundedAt;
 
-    // TODO (you): add the Team side of the TeamMembership relationship and its synchronization helper.
+    @OneToMany(mappedBy = "team")
+    private List<TeamMembership> memberships = new ArrayList<>();
 
     public Team() {
     }
@@ -33,6 +39,20 @@ public class Team {
         this.name = name;
         this.tag = tag;
         this.foundedAt = foundedAt;
+    }
+
+    /**
+     * Connects a player to this team and keeps both sides of the relationship in sync.
+     */
+    public void addMembership(TeamMembership membership, Player player) {
+        membership.setTeam(this);
+        membership.setPlayer(player);
+        memberships.add(membership);
+        player.getMemberships().add(membership);
+    }
+
+    public List<TeamMembership> getMemberships() {
+        return memberships;
     }
 
     public Long getId() {
